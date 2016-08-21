@@ -1,0 +1,104 @@
+#ifndef TREE_H
+#define TREE_H
+
+#include<iostream.h>
+#include<assert.h>
+#include"treenode.h"
+
+template<class Node>
+class Tree{
+public:
+	Tree();
+	void insertNode(const Node &);
+	void preOrderTraversal() const;
+	void inOrderTraversal() const;
+	void postOrderTraversal() const;
+private:
+	TreeNode<Node> *rootPtr;
+
+	void insertNodeHelper(TreeNode<Node> **, const Node &);
+	void preOrderHelper(TreeNode<Node> *) const;
+	void inOrderHelper(TreeNode<Node> *) const;
+	void postOrderHelper(TreeNode<Node> *) const;
+};
+
+template<class Node>
+Tree<Node>::Tree() {rootPtr = 0;}
+
+template<class Node>
+void Tree<Node>::insertNode(const Node &value)
+{
+	insertNodeHelper(&rootPtr, value);
+}
+
+template<class Node>
+void Tree<Node>::insertNodeHelper(TreeNode<Node> **ptr, const Node &value)
+{
+	if(*ptr == 0)
+	{
+		*ptr = new TreeNode<Node>(value);
+		assert(*ptr!=0);
+	}
+	else
+	{
+		if(value < (*ptr)->data)
+			insertNodeHelper(&((*ptr)->leftPtr), value)
+		else
+			if(value > (*ptr)->data)
+				insertNodeHelper(&((*ptr)->rightPtr), value);
+			else
+				cout<<value<<" has duplicates..."<<endl;
+}
+
+template<class Node>
+void Tree<Node>::preOrderTraversal() const
+{
+	preorderHelper(rootPtr);
+}
+
+template<class Node>
+void Tree<Node>::preOrderHelper(TreeNode<NOde> *ptr) const
+{
+	if(ptr!=0)
+	{
+		cout<<ptr->data<<' ';
+		preOrderHelper(ptr->leftPtr);
+		preOrderHepler(ptr->rigthPtr);
+	}
+}
+
+template<class Node>
+void Tree<Node>::inOrderTraversal() const
+{
+	inOrderHelper(rootPtr);
+}
+
+template<class Node>
+void Tree<Node>::inOrderHelper(TreeNode<Node> *ptr) const
+{
+	if(ptr!=0)
+	{
+		inOrderHelper(ptr->leftPtr);
+		cout<<ptr->data<<' ';
+		inOrderHelper(ptr->rightPtr);
+	}
+}
+
+template<class Node>
+void Tree<Node>::postOrderTraversal() const
+{
+	postOrderHelper(rootPtr);
+}
+
+template<class Node>
+void Tree<Node>::postOrderHelper(TreeNode<Node> *ptr) const
+{
+	if(ptr!=0)
+	{
+		postOrderHelper(ptr->leftPtr);
+		postOrderHelper(ptr->rightPtr);
+		cout<<ptr->data<<' ';
+	}
+}
+
+#endif

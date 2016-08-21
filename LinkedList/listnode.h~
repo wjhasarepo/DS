@@ -1,0 +1,14 @@
+#ifndef LISTNODE_H
+#define LISTNODE_H
+
+class Node{
+public:
+	Node(int);
+	void setData(int);
+	int getData() const;
+	void setNextPtr(const Node *);
+	const Node *getNextPtr() const;
+private:
+	int data;
+	Node *nextPtr;
+};
