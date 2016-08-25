@@ -2,21 +2,22 @@
 
 #include<iostream>
 #include"binarytree.h"
+#include"rbtree.h"
 
 int main()
 {
-	Tree<int> tree;
+	RBTree<int> rbtree;
 	int val;
 	
 	for(int i = 0; i < 10; i++)
 	{
 		std::cin>>val;
-		tree.insertNode(val);
+		rbtree.insertNode(val);
 	}
 
-	tree.preOrderTraversal();
-	tree.inOrderTraversal();
-	tree.postOrderTraversal();
+	//tree.preOrderTraversal();
+	rbtree.inOrderTraversal();
+	//tree.postOrderTraversal();
 	
 	return 0;
 }
