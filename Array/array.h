@@ -15,31 +15,25 @@ public:
 		if (this != &arg) 
 		{ 
 			this.size = arg.size;
-		    arr = new int[this.size];
+		    this.array = new int[this.size];
 		  	for(int i = 0; i < arg.size; i++)
 			{
-				arr[i] = arg[i];
+				this.array[i] = arg[i];
 			}
 		}
 
 		return *this;
 	}
 
-	void bubbleSort();
-	void insertionSort();
 	void mergeSort();
 	void quickSort();
-	void selectionSort();
 
 private:
-	Type *arr;
+	Type *array;
 	int length;
 	
-	void bubbleSortHelper();
-	void insertionSortHelper();
 	void mergeSortHelper();
 	void quickSortHelper();
-	void selectionSortHelper();
 
 	void swap(Type *, Type *);
 }
@@ -50,83 +44,52 @@ Array<Type>::Array()
 }
 
 template<typename Type>
-Array<Type>::Array(Type *arg, int len) 
+Array<Type>::Array(Type *arg, int size) 
 {
-	this.length = len;
-	arr = new int[length];
+	this.length = size;
+	this.array = new int[length];
 }
 
-template<typename Node>
-void Array<Node>::bubbleSort()
+templeate<typename Type>
+void Array<Type>::quickSort(int start, int end)
 {
-	bubbleSortHelper();
+	if(start < end)
+		int q = quickSortHelper(start, end);
+	quickSort(start, q-1);
+	quickSort(q+1, end);
 }
 
-template<typename Node>
-void Array<Node>::insertionSort()
+templeate<typename Type>
+void Array<Type>::randomizedSelect(int start, int end, int kth_smallest)
 {
-	insertionSortHelper();
+	if(kth_smallest == end)
+		return this.array[end];
+
+	int q = quickSortHelper(start, end);
+	int k = q - start + 1;
+	if(kth_smallest == k)
+		return this.array[k];
+	else if(kth_smallest < k)
+		return quickSort(start, q-1);
+	else
+		return quickSort(q+1, end);
 }
 
-template<typename Node>
-void Array<Node>::selectionSort()
+template<typename Type>
+void Array<Node>::quickSortHelper(int start, int end)
 {
-	selectionSortHelper();
-}
-
-template<typename Node>
-void Array<Node>::bubbleSortHelper()
-{
-	int j = 0;
-	for(int i = 0; i < this.length - 1; i++)
+	int x = this.array[end];
+	int i = start - 1;
+	for(int j = start; j < end; j++)
 	{
-		for(int j = i; j < this.length - 1; j++)
+		if(this.array[j] <= x)
 		{
-			if(this.arr[j] > this.arr[j+1])
-			{
-				swap(&this.arr[j], &this.arr[j+1])
-			}	
+			i++;
+			swap(&this.array[i], &this.array[j]);
 		}
 	}
-}
+	
+	swap(&this.array[i+1], &x);
 
-template<typename Node>
-void Array<Node>::insertionSortHelper()
-{
-	int j = 0;
-	for(int i = 1; i < this.length; i++)
-	{
-		int temp = this.arr[i];
-		j = i-1;
-		while(j > 0 && this.arr[j] > temp)
-		{
-			this.arr[j+1] = this.arr[j];
-			j--;
-		}
-
-		this.arr[j] = temp;
-	}
-}
-
-template<typename Node>
-void Array<Node>::selectionSortHelper()
-{
-	for(int i = 0; i < this.size; i++)
-	{
-		int min = i;
-		int temp = this.arr[i];
-		j = i+1;
-		while(j < this.length)
-		{
-			if(this.arr[j] < min)
-			{
-				min = j;
-			}
-
-			j++;
-		}
-
-		this.arr[i] = this.arr[min];
-		this.arr[min] = temp;
-	}
+	return i + 1;
 }
