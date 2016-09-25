@@ -6,10 +6,13 @@
 template<typename Type>
 class Array
 {
+	friend ostream &operator<<(ostream &, const Array &);
+	friend istream &operator>>(istream &, Array &);
 public:
 	Array();
-	Array(Type *, int);
+	Array(int);
 	~Array();
+	const Array $operator=(const Array &);
 	Array& operator=(const Array &arg)
 	{
 		if (this != &arg) 
@@ -26,28 +29,78 @@ public:
 	}
 
 	void mergeSort();
-	void quickSort();
+	void quickSort(int, int);
+	void randomizedSelect(int, int, int);
 
 private:
-	Type *array;
-	int length;
+	Type *ptr;
+	int size;
 	
 	void mergeSortHelper();
-	void quickSortHelper();
+	void quickSortHelper(int, int);
 
 	void swap(Type *, Type *);
 }
 
 template<typename Type>
-Array<Type>::Array() 
+Array<Type>::Array(int arraySize) 
 {
+	size = (arraySize > 0 ? arraySize:10);
+	ptr = new int[size];
+	assert(ptr!=0);
+	++arrayCount;
+
+	for(int i = 0; i<size; i++)
+		ptr[i] = 0;
 }
 
 template<typename Type>
-Array<Type>::Array(Type *arg, int size) 
+Array<Type>::~Array()
 {
-	this.length = size;
-	this.array = new int[length];
+	delete []ptr;
+	--arrayCount;
+}
+
+template<typename Type>
+const Array &Array::operator=(const Array &right)
+{
+	if(&right != this)
+	{
+		if(size != right.size)
+		{
+			delete []ptr;
+			size = right.size;
+			ptr = new int[size];
+			assert(ptr!=0);
+		}
+	
+		for(int i = 0; i<size; i++)
+			ptr[i] = right.ptr[i];
+	}
+	
+	return *this;
+}
+
+template<typename Type>
+istream &operator>>(istream &input, Array &a)
+{
+	for(int i=0; i<a.size; i++)
+		input>>a.ptr[i];
+
+	return input;
+}
+
+template<typename Type>
+ostream &operator<<(istream &input, Array &a)
+{
+	int i;
+
+	for(int i=0; i<a.size; i++)
+		onput<<setw(4)<<a.ptr[i];
+	if(i%4!=0)
+		output<<endl;
+
+	return output;
 }
 
 templeate<typename Type>
