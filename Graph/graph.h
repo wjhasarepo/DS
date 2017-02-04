@@ -49,6 +49,7 @@ public:
 
 	void breathFirstSearch(int, int);
 	void depthFirstSearch(int, int);
+	void dijkstra(int, int);
 private:
 	void depthFirstSearchHelper(int, int);
 
@@ -142,4 +143,70 @@ void Graph<T>::depthFirstSearchHelper(int s, int d, int *_visited)
 		if(!_visited[*it])
 			this.depthFirstSearch(*it, d);
 	}
+}
+
+void Graph<T>::singlePairShortestPath(int s, int d) // Dijkstra Algorithm
+{
+	int *dist[this.v_n] = new int[v_n];
+
+	for (int i = 0; i < v_n ; i++)
+	{
+		i == s? dist[i] = 0 : dist[i] = 65535;
+	}
+
+	std::list<int> vertexSet;
+
+	for (int i = 0; i < v_n ; i++)
+	{
+		vertexSet.push_back(dist[i]);
+	}
+
+	while(!vertexSet.empty)
+	{
+		int cur_min = 65535;
+		for (std::list<int>::iterator it=vertexSet.begin(); it!=vertexSet.end(); ++it)
+		{
+			if (*it < min) cur_min = *it;
+		}
+		vertexSet.remove(*it);
+			
+		for (it=mylist[cur_min].begin(); it!=mylist[cur_min].end(); ++it)
+		{
+			if (dist[cur_min] + weight_list[cur_min][*it] < dist[*it])
+			{
+				dist[*it] = dist[cur_min] + weight_list[cur_min][*it]
+			}
+		}
+	}
+
+	return dist[d];
+}
+
+void Graph<T>::allPairShortestPath() // Floyd-Warshall Algorithm
+{
+	int dist[v_n][v_n];
+	
+	for (int i = 0; i < v_n ; i++)
+	{
+		for (int j = 0; j < v_n ; j++)
+		{
+			dist[i][j] = 65536;
+		}
+	}
+
+	for (int i = 0; i < n_v; i++)
+	{
+		for(int j = 0; j < n_v; j++)
+		{
+			for(int k = 0; k < n_v; k++)
+			{
+				if(weight_list[i][k] != 0 && weight_list[k][j] != 0 && dist[i][k] + dist[k][j] < dist[i][j])
+				{
+					dist[i][j] = dist[i][k] + dist[k][j];
+				}
+			}
+		}
+	}
+
+	return dist;
 }
