@@ -50,16 +50,19 @@ public:
 	void breathFirstSearch(int, int);
 	void depthFirstSearch(int, int);
 	void dijkstra(int, int);
+	void fordFulkerson(int, int);
 private:
 	void depthFirstSearchHelper(int, int);
+	int min (int x, int y) { return x<y ? x : y; }
 
+private:
 	int v_n, e_n;
     int current_v_n, current_e_n;
 	std::list<int> *adj_list;
 	T **weight_list;
 }
 
-Graph:Graph(int vn, int en)
+Graph::Graph(int vn, int en)
 {
 	this.v_n = vn;
     this.e_n = en;
@@ -209,4 +212,35 @@ void Graph<T>::allPairShortestPath() // Floyd-Warshall Algorithm
 	}
 
 	return dist;
+}
+
+void Graph<T>::fordFulkerson(int source, int sink)
+{
+	int i,j,u;
+
+    int max_flow = 0;
+
+	int flow[this.n_v][this.n_v];
+	int pred[this.n_v];  // array to store augmenting path
+
+	for (i = 0; i < n_v; i++)
+        for (j = 0; j < n_v; j++)
+             flow[u][v] = 0;
+
+	while(this.breathFirstSearch(source, sink)) 
+	{
+		int increment = INF;
+		for (u=n-1; pred[u]>=0; u=pred[u]) {
+			increment = min(increment, this.weight_list[pred[u]][u]-flow[pred[u]][u]);
+		}
+
+		for (u=n-1; pred[u]>=0; u=pred[u]) {
+			flow[pred[u]][u] += increment;
+			flow[u][pred[u]] -= increment;
+		}
+
+		max_flow += increment;
+	}
+    // No augmenting path anymore. We are done.
+    return max_flow;
 }
