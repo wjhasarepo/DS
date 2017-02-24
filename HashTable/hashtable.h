@@ -122,6 +122,169 @@ public:
         array[ currentPos ].isActive = false;
         return true;
     }
+
+private:
+      
+    struct HashEntry
+    {
+        AnyType element;
+        bool isActive;
+
+        HashEntry( const AnyType & e = AnyType( ), bool a = false )
+          : element{ e }, isActive{ a } { }    
+
+        HashEntry( AnyType && e, bool a = false )
+          : element{ std::move( e ) }, isActive{ a } { }
+    };
+    
+    vector<HashEntry> array;
+    int currentSize;
+    int numHashFunctions;
+    int rehashes;
+    UniformRandom r;
+    HashFamily hashFunctions;
+
+  //  static const double MAX_LOAD = 0.40;  // Not supported in g++ 4.6
+    static const int ALLOWED_REHASHES = 5;
+    
+    bool insertHelper1( const AnyType & xx )
+    {
+        const int COUNT_LIMIT = 100;
+        AnyType x = xx;
+        
+        while( true )
+        {
+            int lastPos = -1;
+            int pos;
+            
+            for( int count = 0; count < COUNT_LIMIT; ++count )
+            {
+                for( int i = 0; i < numHashFunctions; ++i )
+                {
+                    pos = myhash( x, i );
+                    
+                    if( !isActive( pos ) )
+                    {
+                        array[ pos ] = std::move( HashEntry{ std::move( x ), true } );
+                        ++currentSize;
+                        return true;
+                    }
+                }
+                
+                // None of the spots are available. Kick out random one
+                int i = 0;
+                do
+                {
+                    pos = myhash( x, r.nextInt( numHashFunctions ) );
+                } while( pos == lastPos && i++ < 5 );
+              
+                lastPos = pos;
+                std::swap( x, array[ pos ].element );
+            }
+            
+            if( ++rehashes > ALLOWED_REHASHES )
+            {
+                expand( );     // Make the table bigger
+                rehashes = 0;
+            }
+            else
+                rehash( );
+        }
+    }
+    
+    bool insertHelper1( AnyType && x )
+    {
+        const int COUNT_LIMIT = 100;
+        
+        while( true )
+        {
+            int lastPos = -1;
+            int pos;
+            
+            for( int count = 0; count < COUNT_LIMIT; ++count )
+            {
+                for( int i = 0; i < numHashFunctions; ++i )
+                {
+                    pos = myhash( x, i );
+                    
+                    if( !isActive( pos ) )
+                    {
+                        array[ pos ] = std::move( HashEntry{ std::move( x ), true } );
+                        ++currentSize;
+                        return true;
+                    }
+                }
+                
+                // None of the spots are available. Kick out random one
+                int i = 0;
+                do
+                {
+                    pos = myhash( x, r.nextInt( numHashFunctions ) );
+                } while( pos == lastPos && i++ < 5 );
+              
+                lastPos = pos;
+                std::swap( x, array[ pos ].element );
+            }
+            
+            if( ++rehashes > ALLOWED_REHASHES )
+            {
+                expand( );     // Make the table bigger
+                rehashes = 0;
+            }
+            else
+                rehash( );
+        }
+    }
+
+    bool isActive( int currentPos ) const
+      {  return currentPos != -1 &&  array[ currentPos ].isActive; }
+
+    // Method that search all hash function places
+    int findPos( const AnyType & x ) const
+    {
+        for( int i = 0; i < numHashFunctions; ++i )
+        {
+            int pos = myhash( x, i );
+            
+            if( isActive( pos ) && array[ pos ].element == x )
+                return pos;
+        }
+
+        return -1;
+    }
+
+    void expand( )
+    {
+        rehash( static_cast<int>( array.size( ) / MAX_LOAD ) );
+    }
+    
+    void rehash( )
+    {
+        hashFunctions.generateNewFunctions( );
+        rehash( array.size( ) );
+    }
+    
+    void rehash( int newSize )
+    {
+        vector<HashEntry> oldArray = array;
+
+            // Create new double-sized, empty table
+        array.resize( nextPrime( newSize ) );
+        for( auto & entry : array )
+            entry.isActive = false;
+        
+            // Copy table over
+        currentSize = 0;
+        for( auto & entry : oldArray )
+            if( entry.isActive )
+                insert( std::move( entry.element ) );
+    }
+    
+    
+    size_t myhash( const AnyType & x, int which ) const
+    {
+        return hashFunctions.hash( x, which ) % array.size( );
+    }
 };
 
 #endif
