@@ -4,44 +4,44 @@
 #include <iostream>
 
 class String {
-    friend ostream $operator<<(ostream $, const String $);
-    friend istream $operator>>(istream $, String &);
+    friend std::ostream &operator<<(std::ostream &, const String &);
+    friend std::istream &operator>>(std::istream &, String &);
 
 public:
-    String(const char *= "");
+    String(const char* s);
     String(const String &);
     ~String();
     const String &operator=(const String &);
     const String &operator+=(const String &);
-    bool operator!() const
+    bool operator!() const;
     bool operator==(const String &) const;
     bool operator<(const String &) const;
-	bool operator!=(const String &right) const
-	{
+    bool operator!=(const String &right) const
+    {
 		return !(*this == right);
-	}
+    }
     bool operator>(const String &right) const
-	{
+    {
 		return right < *this;
-	}
-	bool operator<=(const String $right) const
-	{
+    }
+    bool operator<=(const String &right) const
+    {
 		return !(right < *this);
-	}
-	bool operator>=(const String &right) const
-	{
+    }
+    bool operator>=(const String &right) const
+    {
 		return !(*this < right);
-	}
-	char &operator[](int);
-	const char &operator[](int) const;
-	String &operator()(int, int);
-	int getLength() const;
+    }
+    char &operator[](int);
+    const char &operator[](int) const;
+    //String &operator()(int, int);
+    int getLength() const;
 
 private:
-	int length;
-	char *ptr;
+    int length;
+    char *ptr;
 
-	void setString(const char *);
+    void setString(const char *);
 };
 
 String::String(const char* s):length(strlen(s))
@@ -69,7 +69,7 @@ const String &String::operator=(const String &right)
 	}
 	else
 	{
-		cout << "Attempted assignment of a String to itself" << endl;
+		std::cout << "Attempted assignment of a String to itself" << std::endl;
 	}
 
 	return *this;
@@ -87,7 +87,7 @@ const String &String::operator+=(const String &right)
 	return *this;
 }
 
-bool String::operator!(const String &right) const
+bool String::operator!() const
 {
 	return length == 0;
 }
@@ -105,20 +105,20 @@ bool String::operator<(const String &right) const
 char &String::operator[](int subscript)
 {
 	assert(subscript >= 0 && subscript < length);
-	return ptr(subscript);
+	return ptr[subscript];
 }
 
 const char &String::operator[](int subscript) const
 {
 	assert(subscript >= 0 && subscript < length);
-	return ptr(subscript);
+	return ptr[subscript];
 }
-
+/*
 String &String::operator()(int index, int subLength)
 {
 	assert(index >= 0 && index < length && subLength >= 0);
 
-	String *subPtr = new String
+	String *subPtr = new String;
 	assert(subPtr != 0);
 
 	if((subLength == 0) || (index + subLength > length))
@@ -131,14 +131,14 @@ String &String::operator()(int index, int subLength)
 	assert(subPtr->ptr != 0);
 
 	strncpy(subPtr->ptr, &ptr[index], subPtr->length);
-	subPtr->ptr[subPtr->length] = '\0'
+	subPtr->ptr[subPtr->length] = '\0';
 
 	return *subPtr;
 }
-
+*/
 int String::getLength() const
 {
-	return lenght;
+	return length;
 }
 
 void String::setString(const char *str)
@@ -148,17 +148,17 @@ void String::setString(const char *str)
 	strcpy(ptr, str);
 }
 
-ostream &operator<<(ostream &output, const String &s)
+inline std::ostream &operator<<(std::ostream &output, const String &s)
 {
 	output << s.ptr;
 	return output;
 }
 
-istream &operator>>(istream &input, String &s)
+inline std::istream &operator>>(std::istream &input, String &s)
 {
 	char temp[100];
 
-	input >> setw(100) >> temp;
+	input >> temp;
 	s=temp;
 	return input;
 }
