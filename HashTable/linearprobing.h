@@ -1,20 +1,21 @@
 #ifndef LINEAR_PROBE
 #define LINEAR_PROBE
 
-class LinearProbe : public HashTable {
+class LinearProbe : public HashTable<K, V> {
 	public:
-		void insert(T k, T v)
+		void insert(K key, V value)
 		{
-			int index = HashFunc(k);
+			int index = HashFunc(key);
 			while(entry[index]!= NULL)
 			{
 				index = HashFunc(index+1);
 			}
 			entry[index] = v;
 		}
-		void search(int k)
+		
+		void search(K key)
 		{
-			int index = HashFunc(k);
+			int index = HashFunc(key);
 			int h = 1;
 			while(entry[index]!= NULL)
 			{
@@ -26,9 +27,9 @@ class LinearProbe : public HashTable {
 			return NULL;
 		}
 		
-		int qudraticProbeSearch(int k)
+		int qudraticProbeSearch(K key)
 		{
-			int index = hashFunc(k);
+			int index = hashFunc(key);
 			int h=1;
 			while(entry[index] != v && entry[index] != NULL)
 				index = (index+h*h)%size;
@@ -38,12 +39,12 @@ class LinearProbe : public HashTable {
 				return -1;
 		}
 
-		void remove(int k)
+		void remove(K key)
 		{
-			int h= HashFunc(k);
+			int index = HashFunc(key);
 			while(entry[h] != NULL)
 			{
-				if(entry[h]->k == k)
+				if(entry[h]->key == key)
 					break;
 				h = HashFunc(h+1);
 			}
@@ -55,9 +56,14 @@ class LinearProbe : public HashTable {
          		}
          		cout<<"Element Deleted"<<endl;
       	}
+      	
+      	HashTable *clone()
+      	{
+      		return new LinearProbe(*this);
+      	}
 
 }
 
 
 
-endif
+#endif
