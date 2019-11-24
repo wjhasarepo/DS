@@ -10,7 +10,7 @@ class LinearProbe : public HashTable<K, V> {
 			{
 				index = HashFunc(index+1);
 			}
-			entry[index] = v;
+			entry[index] = value;
 		}
 		
 		void search(K key)
@@ -19,7 +19,7 @@ class LinearProbe : public HashTable<K, V> {
 			int h = 1;
 			while(entry[index]!= NULL)
 			{
-				if(entry[index] == v) 
+				if(entry[index] == key) 
                 	return entry[index];
 				index = (index+1) % size;
 			}
