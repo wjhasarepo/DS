@@ -1,68 +1,65 @@
 #ifndef LINEAR_PROBE
 #define LINEAR_PROBE
 
-class LinearProbe : public HashTable<K, V> {
+#include<iostream>
+using namespace std;
+
+template<typename K, typename V, typename T>
+class LinearProbe : public HashTable<T> {
 	public:
 		void insert(K key, V value)
 		{
-			int index = HashFunc(key);
-			while(entry[index]!= NULL)
+			int index = this->HashFunc(key);
+			while(this->entry[index]!= NULL)
 			{
-				index = HashFunc(index+1);
+				index = this->HashFunc(index+1);
 			}
-			entry[index] = value;
+			this->entry[index] = value;
 		}
 		
-		void search(K key)
+		V search(K key)
 		{
-			int index = HashFunc(key);
+			int index = this->HashFunc(key);
 			int h = 1;
-			while(entry[index]!= NULL)
+			while(this->entry[index]!= NULL)
 			{
-				if(entry[index] == key) 
-                	return entry[index];
-				index = (index+1) % size;
+				if(this->entry[index] == key) 
+                	return this->entry[index];
+				index = (index+1) % this->size;
 			}
 			
 			return NULL;
 		}
-		
-		int qudraticProbeSearch(K key)
-		{
-			int index = hashFunc(key);
-			int h=1;
-			while(entry[index] != v && entry[index] != NULL)
-				index = (index+h*h)%size;
-			if(entry[index] == v)
-				return entry[index];
-			else
-				return -1;
-		}
 
 		void remove(K key)
 		{
-			int index = HashFunc(key);
-			while(entry[h] != NULL)
+			int index = this->HashFunc(key);
+			while( this->entry[index] != NULL)
 			{
-				if(entry[h]->key == key)
+				if(this->entry[index]->key == key)
 					break;
-				h = HashFunc(h+1);
+				index = this->HashFunc(index+1);
 			}
-			if (t[h] == NULL) {
-            		cout<<"No Element found at key "<<k<<endl;
-            		return;
-         		} else {
-            		delete t[h];
-         		}
-         		cout<<"Element Deleted"<<endl;
+				
+			if (this->entry[index] == NULL) 
+			{
+            	cout<<"No Element found at key "<<index<<endl;
+            	return;
+         	} 
+         	else 
+         	{
+            	delete this->entry[index];
+         	}
+         		
+         	cout<<"Element Deleted";
       	}
       	
-      	HashTable *clone()
+      	HashTable<T> *clone()
       	{
       		return new LinearProbe(*this);
       	}
 
-}
+};
 
 
 
