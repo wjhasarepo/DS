@@ -1,45 +1,56 @@
 #ifndef HASH_TABLE_H
 #define HASH_TABLE_H
 
-#include<list>
+#include<vector>
+#include<typeinfo>
+#include"string.h"
 
-class HashTableEntry {
+
+template<typename K, typename, V>
+struct HashEntry {
+	private:
+		K key;
+		V value;
 	public:
-		int k;
-		int v;
-		HashTableEntry(int k, int v)
+		HashEntry(K key, V value)
 		{
-			this->k = k;
-			this->v = v;
+			this->key = key;
+			this->value = value;
 		}
 };
 
+
+template<typename K, typename V, typename T>
 class HashTable {
+	protected:
+		int size;
+		HashEntry<K, V> **entry;
+		
 	public:
 		HashTable(int s)
 		{
 			this->size = s;
-			entry = new list<HastTableEntry>(this->size);
-		}
-		int HashFunc(int k)
-		{
-			return (k%this->size);
+			this->entry = new HashEntry*[this->size];
+
+			for(int i = 0; i < size; i++)
+				this->entry[i] = NULL;
 		}
 		
-		virtual insert(T k, T v);
-		virtual search(T k);
+		virtual void int HashFunc(K key);
+		virtual void insert(K key, V value);
+		virtual V search(K key);
 		
 		virtual HashTable *clone() = 0;
 		
-		~HashMapTable() 
+		~HashTable() 
 		{
-         	for (int i = 0; i < this->size; i++) {
-            	if (entry[i] != NULL)
-               		delete t[i];
-               	delete[] t;
+         		for (int i = 0; i < this->size; i++) {
+            		if (this->entry[i] != NULL)
+               			delete this->entry[i];
+               		delete[] this->entry;
          	}
       	}
 		
-}
+};
 
 #endif
