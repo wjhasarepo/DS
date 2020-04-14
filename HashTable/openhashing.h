@@ -1,24 +1,32 @@
 #ifndef OPEN_HASHING
 #define OPEN_HASHING
 
-class OpenHasing : public HashTable<T> {
+class OpenHasing : public HashTable<K, V, T> {
+	private:
+		int BUCKET;
+		list<HashEntry> *table;
 	public:
-		void insert(K key, V value)
+		OpenHasing(K key): HashTable(key)
 		{
-			int index = HashFunc(key);
+			table = new list<HashEntry>[BUCKET];
+		}
+			
+		void insert(HashEntry *entry)
+		{
+			int index = HashFunc(entry->key);
 			// will be replace by linked_list methods
-			entry[index].push_back(index);
+			table[index].push_back(entry);
 		}
 		
-		int search(K key)
+		V search(K key)
 		{
 			int index = HashFunc(key);
-			for(int i = 0;i < entry[index].size();i++)
-        		{
-            		if(entry[index][i] == s)
-            		{
-                		return entry[index][I];
-            		}
+
+			for(list<HashEntry>::iterator i = table[index].begin(); i != table[index].end(); i++)
+        	{
+            	if(*i == key)
+            	{
+                	return table[index][i];
         		}
         		
 			return -1;

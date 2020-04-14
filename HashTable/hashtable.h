@@ -24,16 +24,11 @@ template<typename K, typename V, typename T>
 class HashTable {
 	protected:
 		int size;
-		HashEntry<K, V> **entry;
 		
 	public:
 		HashTable(int s)
 		{
 			this->size = s;
-			this->entry = new HashEntry*[this->size];
-
-			for(int i = 0; i < size; i++)
-				this->entry[i] = NULL;
 		}
 		
 		virtual void int HashFunc(K key);

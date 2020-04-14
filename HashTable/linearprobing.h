@@ -6,12 +6,24 @@ using namespace std;
 
 template<typename K, typename V, typename T>
 class LinearProbe : public HashTable<K, V, T> {
+	private:
+		HashEntry<K, V> **entry;
+
 	public:
+		LinearProbe(K key):HashTable(key)
+		{
+			this->entry = new HashEntry*[this->size];
+
+			for(int i = 0; i < size; i++)
+				this->entry[i] = NULL;
+
+		}
+
 		int hashFunc(K key)
 		{
 			return key % size;
 		}
-
+		
 		void insert(K key, V value)
 		{
 			HashEntry<K, V> *temp = new HashEntry<K, V>(key, value);
