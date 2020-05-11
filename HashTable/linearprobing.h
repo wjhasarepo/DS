@@ -71,24 +71,22 @@ class LinearProbe : public HashTable<K, V, T> {
 				
 			if (this->entry[index] == NULL) 
 			{
-            	cout<<"No Element found at key "<<index<<endl;
-            	return;
-         	} 
-         	else 
-         	{
-            	delete this->entry[index];
-         	}
+            			cout<<"No Element found at key "<<index<<endl;
+            			return;
+         		} 
+         		else 
+         		{
+            			delete this->entry[index];
+         		}
          		
-         	cout<<"Element Deleted";
-      	}
+         		cout<<"Element Deleted";
+      		}
       	
-      	HashTable<T> *clone()
-      	{
-      		return new LinearProbe(*this);
-      	}
+      		virtual LinearProbe<K, V, T> *clone()
+      		{
+      			return new LinearProbe(*this);
+      		}
 
 };
-
-
 
 #endif

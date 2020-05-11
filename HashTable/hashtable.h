@@ -6,6 +6,7 @@
 #include"string.h"
 
 
+
 template<typename K, typename, V>
 struct HashEntry {
 	private:
@@ -39,10 +40,11 @@ class HashTable {
 		
 		~HashTable() 
 		{
-         		for (int i = 0; i < this->size; i++) {
-            		if (this->entry[i] != NULL)
-               			delete this->entry[i];
-               		delete[] this->entry;
+			for (int i = 0; i < this->size; i++) 
+			{
+            	if (this->entry[i] != NULL)
+               		delete this->entry[i];
+               	delete[] this->entry;
          	}
       	}
 		

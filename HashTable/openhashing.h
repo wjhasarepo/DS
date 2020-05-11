@@ -1,10 +1,15 @@
 #ifndef OPEN_HASHING
 #define OPEN_HASHING
 
+#include <list>
+
+
+
 class OpenHasing : public HashTable<K, V, T> {
 	private:
 		int BUCKET;
 		list<HashEntry> *table;
+
 	public:
 		OpenHasing(K key): HashTable(key)
 		{
@@ -14,7 +19,6 @@ class OpenHasing : public HashTable<K, V, T> {
 		void insert(HashEntry *entry)
 		{
 			int index = HashFunc(entry->key);
-			// will be replace by linked_list methods
 			table[index].push_back(entry);
 		}
 		
@@ -24,10 +28,11 @@ class OpenHasing : public HashTable<K, V, T> {
 
 			for(list<HashEntry>::iterator i = table[index].begin(); i != table[index].end(); i++)
         	{
-            	if(*i == key)
+            	if(*i->key == key)
             	{
-                	return table[index][i];
+                	return table[index];
         		}
+			}
         		
 			return -1;
 		}
@@ -38,8 +43,9 @@ class OpenHasing : public HashTable<K, V, T> {
 			
 			// find the key in (inex)th list 
   			list <int> :: iterator i; 
-  			for (list <int> :: iterator i = table[index].begin(); i != table[index].end(); i++) { 
-    			if (*i == key) 
+  			for (list <int> :: iterator i = table[index].begin(); i != table[index].end(); i++) 
+			{
+    			if (*i->key == key) 
       				break; 
   			}
   			
@@ -47,6 +53,11 @@ class OpenHasing : public HashTable<K, V, T> {
   			if (i != table[index].end()) 
     			table[index].erase(i); 
       	}
+
+		virtual OpenHashing<K, V, T> *clone() const
+		{
+			return new OpenHasing(*this);
+		}
 }
 
 
