@@ -59,6 +59,7 @@ template<typename Node>
 void RBTree<Node>::insertFixHelper(RBTreeNode<Node> **x_ptr, const Node &value)
 {
 	(*x_ptr)->color = "red";
+	
 	while ( (*x_ptr)->data != (*rootPtr)->data && ((*x_ptr)->parent->color == "red") ) 
 	{
        		if ( (*x_ptr)->parent == (*x_ptr)->parent->parent->leftPtr ) 
@@ -123,7 +124,8 @@ void RBTree<Node>::insertFixHelper(RBTreeNode<Node> **x_ptr, const Node &value)
 
        		}
 	}
-    	/* Colour the root black */
+    	
+	/* Colour the root black */
     	(*rootPtr)->color = "black"; 
 }
 
