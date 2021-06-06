@@ -2,6 +2,16 @@
 #define GRAPH_H
 
 #include<list>
+class Edge {
+	public :
+		
+		Edge(int arg_src, int arg_dst, int arg_weight) : src(arg_src), dst(arg_dst), weight(arg_weight)
+	
+	{}
+		int src;
+		int dst;			
+    		int weight;
+};
 
 /*
 template<typename V>
@@ -42,53 +52,28 @@ public:
 template<typename T>
 class Graph {
 public:
-	Graph(int, int)
-    ~Graph()
-	void insertVertex(int)
-    void insertEdge(int, int)
+	Graph() {};
+	Graph (int arg_node_count, list<Edge> arg_edge_list) : node_count(arg_node_count), edge_list(arg_edge_list);					           {}
+    	~Graph();
+	//void insertVertex(int);
+    	//void insertEdge(int, int);
 
 	void breathFirstSearch(int, int);
 	void depthFirstSearch(int, int);
-	void dijkstra(int, int);
+	void singlePairShortestPath(int, int);
+	void allPairShortestPath();
 	void fordFulkerson(int, int);
 private:
 	void depthFirstSearchHelper(int, int);
 	int min (int x, int y) { return x<y ? x : y; }
 
 private:
-	int v_n, e_n;
-    int current_v_n, current_e_n;
+	int current_v_n, current_e_n;
 	std::list<int> *adj_list;
 	T **weight_list;
-}
-
-Graph::Graph(int vn, int en)
-{
-	this.v_n = vn;
-    this.e_n = en;
-    this.vertex_list = new std::list<V> [v_n];
-    this.weight_list = new T [v_n];
-	for(int i = 0; i < v_n; i++)
-	{
-		this.weight_list[i] = new T [v_n];
-	}
-
-	this.current_v_num = this.current_e_num = 0;
-}
-
-void Graph::insertVertex(Vertex v) 
-{
-    this.adj_list[current_v_num] = v;
 	
-	this.current_v_number++;
-}
-  
-void Graph::insertEdge(int s, int d, T w)
-{
-	this.adj_list[current_v_num].push_back(d);
-	this.weight_list[s][d] = w;
-
-	this.current_e_number++;
+	int node_count;
+	list<Edge> edge_list;
 }
 
 void Graph::breathFirstSearch(int s, int d)
@@ -148,7 +133,7 @@ void Graph<T>::depthFirstSearchHelper(int s, int d, int *_visited)
 	}
 }
 
-void Graph<T>::singlePairShortestPath(int s, int d) // Dijkstra Algorithm
+void Graph<T>::singlePairShortestPath(int s) // Dijkstra Algorithm
 {
 	int *dist[this.v_n] = new int[v_n];
 
@@ -183,6 +168,38 @@ void Graph<T>::singlePairShortestPath(int s, int d) // Dijkstra Algorithm
 	}
 
 	return dist[d];
+}
+
+void Graph<T>::singlePairShortestPathWithNegativeWeight(int s) 
+{
+	// Initialize the distance / cost from the source node to all other nodes to some max value.
+	vector<int> distance(node_count, 999999999);
+	
+	// Distance/cost from the source node to itself is 0.
+	distance[src] = 0;
+
+	for (int i=0; i<node_count; i++) 
+	{
+		for (auto& it : edge_list) 
+		{
+			if (distance[it.dst] > distance[it.src] + it.weight) 
+			{
+				distance[it.dst] = distance[it.src] + it.weight;
+			}
+		}
+	}		
+	
+	for (auto& it : edge_list) 
+	{
+		if (distance[it.dst] > distance[it.src] + it.weight) 
+		{
+			cout << "Negative weight cycle exist in the graph !!!" << endl;
+		}
+	}
+
+	for (int i=0; i<node_count; i++)
+		cout << "Source Node(" << src << ") -> Destination Node(" << i << ") : Length => " << distance[i] << endl;
+		
 }
 
 void Graph<T>::allPairShortestPath() // Floyd-Warshall Algorithm
